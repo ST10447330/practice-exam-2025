@@ -4,6 +4,10 @@
  */
 package com.mycompany.question_two_twenty_twentyfive;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author emeris
@@ -18,6 +22,63 @@ public class Product_Sales_Application extends javax.swing.JFrame {
     public Product_Sales_Application() {
         initComponents();
     }
+    // Method to load the data and show it in the text area
+private void loadData() {
+ 
+    // Create an object of the ProductSales class
+    ProductSales productSales = new ProductSales();
+ 
+    // Get each answer from the methods
+    int total = productSales.GetTotalSales();
+    double average = productSales.GetAverageSales();
+    int over = productSales.GetSalesOverLimit();
+    int under = productSales.GetSalesUnderLimit();
+    int years = productSales.GetProductsProcessed();
+ 
+    // Put everything together in one piece of text
+    // Math.round makes the average 367
+    String report = "Total Sales: " + total
+            + "\nAverage Sales: " + Math.round(average)
+            + "\nSales over limit: " + over
+            + "\nSales under limit: " + under;
+ 
+    // Show the report in the text area
+   txtSaleAverages.setText(report);
+ 
+    // Show the number of years in the label
+    txtList.setText("Years Processed: " + years);
+}
+ 
+// Method to save the data to a text file
+private void saveData() {
+ 
+    // Check that something has been loaded first
+    if (txtSaleAverages.getText().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Please load the product data first",
+                "Nothing to save", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+ 
+    try {
+        // Create the file and write the text area contents into it
+        FileWriter file = new FileWriter("ProductSales.txt");
+        file.write(txtSaleAverages.getText());
+ 
+        // Close the file
+        file.close();
+ 
+        // Tell the user it worked
+        JOptionPane.showMessageDialog(this, "Product data has been saved",
+                "Saved", JOptionPane.INFORMATION_MESSAGE);
+ 
+    } catch (IOException e) {
+        // Show the error if the file could not be written
+        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -32,9 +93,9 @@ public class Product_Sales_Application extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         btnLoadProductData = new javax.swing.JButton();
         btnSaveProductData = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        lstProductSales = new javax.swing.JList<>();
         txtSaleAverages = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtList = new javax.swing.JTextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         mnuExit = new javax.swing.JCheckBoxMenuItem();
@@ -51,8 +112,11 @@ public class Product_Sales_Application extends javax.swing.JFrame {
         btnLoadProductData.addActionListener(this::btnLoadProductDataActionPerformed);
 
         btnSaveProductData.setText("Save Product Data");
+        btnSaveProductData.addActionListener(this::btnSaveProductDataActionPerformed);
 
-        jScrollPane1.setViewportView(lstProductSales);
+        txtList.setColumns(20);
+        txtList.setRows(5);
+        jScrollPane2.setViewportView(txtList);
 
         jMenu1.setText("File");
 
@@ -92,16 +156,16 @@ public class Product_Sales_Application extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(92, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtSaleAverages, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(btnLoadProductData, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
+                            .addComponent(btnSaveProductData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(58, 58, 58))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(btnLoadProductData, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
-                                .addComponent(btnSaveProductData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(58, 58, 58))))
+                            .addComponent(txtSaleAverages, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -113,8 +177,8 @@ public class Product_Sales_Application extends javax.swing.JFrame {
                 .addGap(12, 12, 12)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19)
                 .addComponent(txtSaleAverages, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(17, Short.MAX_VALUE))
         );
@@ -124,11 +188,18 @@ public class Product_Sales_Application extends javax.swing.JFrame {
 
     private void btnLoadProductDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadProductDataActionPerformed
         // TODO add your handling code here:
+        loadData();
     }//GEN-LAST:event_btnLoadProductDataActionPerformed
 
     private void mnuLoadProductDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuLoadProductDataActionPerformed
         // TODO add your handling code here:
+        loadData();
     }//GEN-LAST:event_mnuLoadProductDataActionPerformed
+
+    private void btnSaveProductDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveProductDataActionPerformed
+        // TODO add your handling code here:
+        saveData();
+    }//GEN-LAST:event_btnSaveProductDataActionPerformed
 
     /**
      * @param args the command line arguments
@@ -162,13 +233,13 @@ public class Product_Sales_Application extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JList<String> lstProductSales;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JCheckBoxMenuItem mnuExit;
     private javax.swing.JCheckBoxMenuItem mnuLoadProductData;
     private javax.swing.JCheckBoxMenuItem mnuSaveProductData;
     private javax.swing.JCheckBoxMenuItem mnuclear;
     private javax.swing.JMenu tls;
+    private javax.swing.JTextArea txtList;
     private javax.swing.JTextField txtSaleAverages;
     // End of variables declaration//GEN-END:variables
 }
